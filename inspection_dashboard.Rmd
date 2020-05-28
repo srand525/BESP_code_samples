@@ -1,11 +1,33 @@
 ---
 title: "Supplement to Application for Dir. Childcare Analytics, BESP"
+resource_files:
+- ZIP_CODE_040114/ZIP_CODE_040114.shp.xml
+- ZIP_CODE_040114/ZIP_CODE_040114.dbf
+- ZIP_CODE_040114/ZIP_CODE_040114.sbn
+- ZIP_CODE_040114/ZIP_CODE_040114.sbx
+- ZIP_CODE_040114/ZIP_CODE_040114.shp
+- ZIP_CODE_040114/ZIP_CODE_040114.shx
+- ZIP_CODE_040114/ZIP_CODE_040114.prj
+- ZIP_CODE_040114/ZIP_CODE_040114.shp.xml
+- ZIP_CODE_040114/ZIP_CODE_040114.dbf
+- ZIP_CODE_040114/ZIP_CODE_040114.sbn
+- ZIP_CODE_040114/ZIP_CODE_040114.sbx
+- ZIP_CODE_040114/ZIP_CODE_040114.shp
+- ZIP_CODE_040114/ZIP_CODE_040114.shx
+- ZIP_CODE_040114/ZIP_CODE_040114.prj
+- ZIP_CODE_040114/ZIP_CODE_040114.shp.xml
+- ZIP_CODE_040114/ZIP_CODE_040114.dbf
+- ZIP_CODE_040114/ZIP_CODE_040114.sbn
+- ZIP_CODE_040114/ZIP_CODE_040114.sbx
+- ZIP_CODE_040114/ZIP_CODE_040114.shp
+- ZIP_CODE_040114/ZIP_CODE_040114.shx
+- ZIP_CODE_040114/ZIP_CODE_040114.prj
 runtime: shiny
 output:
   flexdashboard::flex_dashboard:
     orientation: rows
-    vertical_layout: scroll
     source_code: https://github.com/srand525/BESP_code_samples
+    vertical_layout: scroll
 ---
 
 ```{r include = FALSE}
@@ -101,9 +123,10 @@ renderValueBox({
 ```{r num_kids}
 source("agg_data.R",local = F)
 
-num_children <- reactive({violations_by_zip_demo %>%
-  filter(inspection_date == input$date1) %>%
-    summarise(children_impacted = sum(tot_reach))
+num_children <- reactive({
+  violations_by_reach %>% 
+    filter(inspection_date == input$date1) %>% 
+    summarise(kids = sum(tot_reach)) %>% select(kids)
 })
 
 renderValueBox({
@@ -128,7 +151,7 @@ gen_shape_vals <- reactive({
 })
 
 
-renderValueBox({  
+renderValueBox({
   # num_zips(shape_test)
   valueBox(
     value = gen_shape_vals(),

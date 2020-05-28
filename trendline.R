@@ -21,15 +21,15 @@ citywide_violations <- violations_by_zip_demo %>%
   data.frame()
 
 hc_trendline <<- highchart(type="stock") %>%
-  hc_title(text="# Violations, Citywide",align="left") %>%
+  hc_title(text="Violations in Childcare Centers, Citywide",align="left") %>%
   hc_xAxis(type = "datetime", labels = list(format = '{value:%m/%d}'),title = list(text = "Inspection Date")) %>%
-  hc_yAxis_multiples(list(title=list(text="Violations in Chidlcare Centers, Citywide")
+  hc_yAxis_multiples(list(title=list(text="# Violations")
                           ,align="left",top="0%",height="70%",opposite=F,labels=list(format="{value}"))
                      ,list(title=list(text="# Facilities in Violation"),align="right",top="71%",height="29%",opposite=T)) %>%
   hc_plotOptions(column = list(stacking = "normal")) %>%
   hc_tooltip(valueDecimals=0, crosshairs=TRUE, shared=TRUE) %>%
-  hc_add_series(citywide_violations,name = "# Violations",type="line",hcaes(x=inspection_date,y=tot_facilities),yAxis=1) %>%
-  hc_add_series(citywide_violations,name = "# Facilities",type="line",hcaes(x=inspection_date,y=tot_violations)) %>%
+  hc_add_series(citywide_violations,name = "# Violations",type="line",hcaes(x=inspection_date,y=tot_violations)) %>%
+  hc_add_series(citywide_violations,name = "# Facilities",type="line",hcaes(x=inspection_date,y=tot_facilities),yAxis=1) %>%
   hc_rangeSelector(buttons = list(
     list(type='month', text='1m', count=1),
     list(type='week', text='3w', count=3),

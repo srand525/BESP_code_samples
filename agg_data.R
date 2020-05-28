@@ -42,19 +42,25 @@ violations_by_zip <- raw_data_subset %>%
   select(inspection_date,zip_code,n_facilities,n_violations) %>% #Select columns with aggregate counts
   data.frame()
 
+violations_by_reach <<- raw_data_subset %>% 
+  group_by(daycare_id,zip_code,inspection_date) %>% 
+  summarise(capacity = max(max_cap)) %>% 
+  ungroup() %>% 
+  group_by(zip_code,inspection_date) %>% 
+  summarise(tot_reach = sum(capacity,na.rm = T)) %>% #Sum capacity by zip code to get a proxy for reach by zipcode
+  data.frame()
 
 #4. Create a zipcode characteristics file with zipcode demographics and the total max capcity of the childcare centers
 # in that zip
 
-#Find the max of the maximum capacity per child care center, to catch any instances wehre there may be multiple values per facility 
-center_demo_df <- raw_data_subset %>% 
+#Find the max of the maximum capacity per child care center, to catch any instances where there may be multiple values per facility 
+center_demo_df <<- raw_data_subset %>% 
   group_by(daycare_id,zip_code) %>% 
   summarise(capacity = max(max_cap)) %>% 
   ungroup() %>% 
   group_by(zip_code) %>% 
   summarise(tot_reach = sum(capacity,na.rm = T)) %>% #Sum capacity by zip code to get a proxy for reach by zipcode
   data.frame()
-
 
 # Read in demographic statistics by zip and select columns of interest
 demo_by_zip_df <- read.csv("Demographic_Statistics_By_Zip_Code.csv") %>% 
