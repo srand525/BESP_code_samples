@@ -3,7 +3,7 @@
 ## Supplement to application for Director of Childcare Analytics, BESP, Job ID: 433038
 ## May 28, 2020
 
-## This script reads in data on inspections of chilcare facilities in NYC, aggregates to the zip code level
+## This script reads in data on inspections of childcare facilities in NYC, aggregates to the zip code level
 ## and then merges inspection data with another dataset on zip code demographics to create a zip-level 
 ## characteristics file. 
 

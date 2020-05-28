@@ -5,7 +5,7 @@ output:
   flexdashboard::flex_dashboard:
     orientation: rows
     vertical_layout: scroll
-    source_code: https://git.io/vaZdx
+    source_code: https://github.com/srand525/BESP_code_samples
 ---
 
 ```{r include = FALSE}

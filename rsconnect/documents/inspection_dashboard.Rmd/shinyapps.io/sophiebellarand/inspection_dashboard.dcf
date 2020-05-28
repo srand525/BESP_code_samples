@@ -1,0 +1,13 @@
+name: inspection_dashboard
+title: inspection_dashboard
+username:
+account: sophiebellarand
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2372005
+bundleId: 3201305
+url: https://sophiebellarand.shinyapps.io/inspection_dashboard/
+when: 1590685756.90621
+asMultiple: FALSE
+asStatic: FALSE
+additionalFiles: ZIP_CODE_040114/ZIP_CODE_040114.shp.xml|ZIP_CODE_040114/ZIP_CODE_040114.dbf|ZIP_CODE_040114/ZIP_CODE_040114.sbn|ZIP_CODE_040114/ZIP_CODE_040114.sbx|ZIP_CODE_040114/ZIP_CODE_040114.shp|ZIP_CODE_040114/ZIP_CODE_040114.shx|ZIP_CODE_040114/ZIP_CODE_040114.prj
