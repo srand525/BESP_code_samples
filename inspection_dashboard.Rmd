@@ -1,0 +1,177 @@
+---
+title: "Supplement to Application for Dir. Childcare Analytics, BESP"
+runtime: shiny
+output:
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    vertical_layout: scroll
+    source_code: https://git.io/vaZdx
+---
+
+```{r include = FALSE}
+library(flexdashboard)
+library(magrittr)
+library(highcharter)
+library(leaflet)
+library(shiny)
+options(shiny.sanitize.errors = FALSE)
+```
+
+
+# Introduction {.sidebar}
+
+Select a date to view data gathered during inspections of childcare facilities.
+
+```{r input_val}
+dateInput("date1", "Inspection Date:", value = as.Date("2019-10-01"))
+```
+
+
+
+#### Data Sources
+
+**Inspectional Data** 
+
+Dataset Name: Childcare Center Inspections  
+Data Provider: NYC Department of Health and Mental Hygiene (DOHMH)   
+Accessed Via: [NYC Open Data](https://data.cityofnewyork.us/Health/DOHMH-Childcare-Center-Inspections/dsg6-ifza/data)   
+
+**Shape files**    
+
+Dataset Name: Zip Code Boundaries   
+Data Provider: Department of Information Technology & Telecommunications (DoITT)   
+Accessed Via: [NYC Open Data](https://data.cityofnewyork.us/Business/Zip-Code-Boundaries/i8iw-xf4u/data?no_mobile=true)   
+
+**Zip Code Demographics Survey**   
+
+Dataset Name: Demographic Statistics By Zip Code    
+Data Provider: NYC Department of Youth and Community Development (DYCD)   
+Accessed Via: [NYC Open Data](https://data.cityofnewyork.us/City-Government/Demographic-Statistics-By-Zip-Code/kku6-nxdu)  
+
+_Note:_  
+
+[DOHMH Childcare Center Inspections, NYC Open Data](https://data.cityofnewyork.us/Health/DOHMH-Childcare-Center-Inspections/dsg6-ifza/data)
+
+Violations by Geography
+=======================================================================
+
+## Slider column
+
+### Violations Found during Inspections {.value-box}
+
+```{r num_viol}
+source("agg_data.R",local = F)
+
+num_violations <- reactive({violations_by_zip_demo %>%
+  filter(inspection_date == input$date1) %>%
+    summarise(tot_violations = sum(n_violations))
+})
+
+renderValueBox({
+  valueBox(
+    value = num_violations(),
+    icon = "fa-exclamation-triangle",
+    color = "blue"
+  )
+})
+```
+
+### Facilities with Violations {.value-box}
+
+```{r num_fac}
+source("agg_data.R",local = F)
+
+num_facilities <- reactive({violations_by_zip_demo %>%
+  filter(inspection_date == input$date1) %>%
+    summarise(tot_facilities = sum(n_facilities))
+})
+
+renderValueBox({
+  valueBox(
+    value = num_facilities(),
+    icon = "fa-school",
+    color = "red"
+  )
+})
+```
+
+
+### Children Potentially Impacted {.value-box}
+
+```{r num_kids}
+source("agg_data.R",local = F)
+
+num_children <- reactive({violations_by_zip_demo %>%
+  filter(inspection_date == input$date1) %>%
+    summarise(children_impacted = sum(tot_reach))
+})
+
+renderValueBox({
+  valueBox(
+    value = format(num_children(),big.mark = ","),
+    icon = "fa-child",
+    color = "grey"
+  )
+})
+```
+
+
+### Zip Codes with Facilities Reporting Violations {.value-box}
+
+```{r geo_valuebox}
+source("agg_data.R",local = F)
+source("map.R",local = F)
+
+gen_shape_vals <- reactive({
+  shape_test<-gen_shape_files(input_date = input$date1)
+  length(unique(shape_test$ZIPCODE[!is.na(shape_test$n_violations)]))
+})
+
+
+renderValueBox({  
+  # num_zips(shape_test)
+  valueBox(
+    value = gen_shape_vals(),
+    icon = "fa-area-chart",
+    color = "green"
+  )
+})
+```
+
+Row
+-----------------------------------------------------------------------
+
+### Demographic data from NYC Open Data, Department of Youth and Community Development (DYCD)
+```{r message=FALSE, warning=FALSE}
+source("map.R",local = F)
+source("agg_data.R",local = F)
+
+
+gen_this_shape_file <- reactive({
+  gen_shape_files(input_date = input$date1)
+})
+
+
+renderLeaflet({
+  shape_test <- gen_this_shape_file()
+  popup_test <- gen_popup(shape_test)
+  colorramp_test <- gen_color_ramp(shape_test)
+  map <- gen_map(shape_file = shape_test,color_ramp = colorramp_test,pop_up = popup_test)
+
+  map
+})
+
+```
+
+
+Violations by Inspection Date
+=======================================================================
+
+### Summary Trendline
+
+```{r trend_line}
+source("trendline.R",local = F)
+
+hc_trendline
+```
+
